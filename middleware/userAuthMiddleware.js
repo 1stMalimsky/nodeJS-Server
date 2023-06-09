@@ -23,16 +23,16 @@ const loggedInCheck = async (req, res, next) => {
     }
 }
 
-const checkCredentials = (needAdmin, needBiz, needOwner) => {
+const checkCredentials = (needAdmin, needBiz) => {
     return async (req, res, next) => {
         try {
-
             if (needAdmin && req.tokenPayload.isAdmin && needAdmin === true) {
                 return next();
             }
             if (needBiz && req.tokenPayload.isBiz && needBiz === true) {
                 return next();
             }
+            else throw { message: "you don't have the right credentials" };
         }
         catch (err) {
             console.log("userAuthMW response", err);
@@ -40,6 +40,7 @@ const checkCredentials = (needAdmin, needBiz, needOwner) => {
         }
     }
 }
+
 
 module.exports = {
     checkCredentials,

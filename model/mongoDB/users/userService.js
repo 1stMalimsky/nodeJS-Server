@@ -23,6 +23,11 @@ const getAllUsers = () => {
     return User.find();
 }
 
+const updateUser = (id, updatedUser) => {
+    return User.findByIdAndUpdate(id, updatedUser, {
+        new: true,
+    });
+};
 
 
 module.exports = {
@@ -30,5 +35,6 @@ module.exports = {
     loginUser,
     getUserByEmail,
     getAllUsers,
-    getUserById
+    getUserById,
+    updateUser
 }
