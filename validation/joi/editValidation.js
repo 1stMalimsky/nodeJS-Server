@@ -51,13 +51,6 @@ const validateBizChangeSchema = Joi.object({
             new RegExp(/^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$/)
         )
         .required(),
-    password: Joi.string()
-        .regex(
-            new RegExp(
-                /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/
-            )
-        )
-        .required(),
     isBusiness: Joi.boolean().required()
 })
 

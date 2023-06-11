@@ -20,7 +20,7 @@ app.use("/api", apiRouter);
 
 app.use((err, req, res, next) => {
   console.error(chalk.magenta(err));
-  res.status(500).json({ "error msg": err.message });
+  res.status(500).json({ "error msg": err.message || err });
 })
 
 // catch 404 and forward to error handler

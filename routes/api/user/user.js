@@ -110,8 +110,14 @@ router.put("/:id", loggedInCheck, async (req, res) => {
 /* PATCH requests */
 router.patch("/:id", loggedInCheck, async (req, res) => {
     try {
+
         await validateUserId(req.params.id);
-        //await validateBizChange(req.body);
+        await validateBizChange(req.body);
+        if (req.params.id === req.tokenPayload.userId.toString() && req.params.id === req.body.email) {
+            await userServiceModel.updateUser(req.params.id, { isBusiness: req.body.isBusiness })
+            res.status(200).json({ message: "business status updated!" })
+        }
+        else throw { message: "You don't are not the user you are trying to edit!" }
     }
     catch (err) {
         console.log("err from bizCahnge", err);
@@ -119,6 +125,22 @@ router.patch("/:id", loggedInCheck, async (req, res) => {
     }
 })
 
+/* DELETE requests */
+
+router.delete("/:id", loggedInCheck, async (req, res) => {
+    try {
+        await validateUserId(req.params.id);
+        if (req.tokenPayload.isAdmin || req.tokenPayload.userId.toString() === req.params.id) {
+            await userServiceModel.deleteUser(req.params.id)
+            res.status(200).json({ message: "user deleted!" })
+        }
+        else throw ("You are not allowed to delete this user")
+
+    }
+    catch (err) {
+        res.status(400).json(err.message || err);
+    }
+})
 
 
 module.exports = router;

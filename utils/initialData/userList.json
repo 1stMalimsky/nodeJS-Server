@@ -1,0 +1,66 @@
+[
+  {
+    "name": {
+      "firstName": "Alon",
+      "middleName": "",
+      "lastName": "Malimsky"
+    },
+    "phone": "05356352821",
+    "email": "a@gmail.com",
+    "password": "Aa123456!",
+    "image": {
+      "url": "https://cdn.pixabay.com/photo/2020/04/07/17/01/chicks-5014152_960_720.jpg",
+      "alt": "yellow fluffy chickens"
+    },
+    "address": {
+      "state": "",
+      "country": "IL",
+      "city": "Aniam",
+      "street": "Aniam",
+      "houseNumber": 123456,
+      "zip": null
+    },
+    "isAdmin": true,
+    "isBusiness": false
+  },
+  {
+    "name": {
+      "firstName": "Yael",
+      "middleName": "",
+      "lastName": "Malimsky"
+    },
+    "phone": "05356352821",
+    "email": "y@gmail.com",
+    "password": "Aa123456!",
+    "address": {
+      "state": "",
+      "country": "IL",
+      "city": "Aniam",
+      "street": "Aniam",
+      "houseNumber": 1,
+      "zip": ""
+    },
+    "isAdmin": false,
+    "isBusiness": false
+  },
+  {
+    "name": {
+      "firstName": "Nave",
+      "middleName": "Roni",
+      "lastName": "Malimsky"
+    },
+    "phone": "05356353321",
+    "email": "nave@gmail.com",
+    "password": "Aa123456!",
+    "address": {
+      "state": "",
+      "country": "IL",
+      "city": "Tel Aviv",
+      "street": "Jabotinski",
+      "houseNumber": 156,
+      "zip": "1235836"
+    },
+    "isAdmin": false,
+    "isBusiness": true
+  }
+]

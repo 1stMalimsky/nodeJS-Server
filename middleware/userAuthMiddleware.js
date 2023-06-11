@@ -17,7 +17,7 @@ const loggedInCheck = async (req, res, next) => {
         if (err instanceof CustomError) {
             errToSend = err;
         } else {
-            errToSend = new CustomError("LoggedInChecked error");
+            errToSend = new CustomError("Your token is invalid. Please try again");
         }
         res.status(400).json(errToSend);
     }

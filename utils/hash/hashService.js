@@ -18,7 +18,21 @@ const compareHash = (password, hash) => {
     }
 };
 
+const fisrtUsersHash = async (userArr) => {
+    try {
+        const hashedPasswords = await Promise.all(hashPromises);
+
+        for (let i; i < 3; i++) {
+            userArr[i].password = hashedPasswords[i];
+        };
+    }
+    catch (err) {
+        res.status(400).json({ message: err.message || err })
+    }
+}
+
 module.exports = {
     generateHash,
-    compareHash
+    compareHash,
+    fisrtUsersHash,
 }
