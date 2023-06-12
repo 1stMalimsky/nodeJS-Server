@@ -19,7 +19,7 @@ const findCardById = (id) => {
 }
 
 const findMany = (userId) => {
-    return Card.find({ user_id: userId }, { title: 1 });
+    return Card.find({ user_id: userId });
 }
 
 const updateCard = (cardId, updatedCard) => {

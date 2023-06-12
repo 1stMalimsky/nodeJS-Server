@@ -1,13 +1,11 @@
 const express = require("express");
 const router = express.Router();
-const mongoose = require('mongoose');
 const jwtServiceModel = require("../../../utils/jwt/jwtService");
 const chalk = require("chalk");
 const cardsServiceModel = require("../../../model/mongoDB/cards/cardService")
 const { checkCredentials, loggedInCheck } = require("../../../middleware/userAuthMiddleware");
 const validateId = require("../../../validation/joi/userIdValidation")
 const { validateCardSchema } = require("../../../validation/joi/cardsValidation");
-const { genereateBizNumber } = require("../../../utils/generateBizNumber");
 const generateBizNumber = require("../../../utils/generateBizNumber");
 
 
@@ -59,8 +57,8 @@ router.get("/my-cards", async (req, res) => {
 
 router.get("/:id", async (req, res) => {
     try {
+        await validateId({ id: req.params.id });
         const reqId = req.params.id;
-        await validateId(reqId);
         const foundCard = await cardsServiceModel.findCardById(reqId)
         res.status(200).json({ foundCard: foundCard });
     }
@@ -74,15 +72,15 @@ router.get("/:id", async (req, res) => {
 
 router.put("/:id", loggedInCheck, async (req, res) => {
     try {
+        validateId({ id: req.params.id });
         const cardId = req.params.id;
-        validateId(cardId);
         const foundCard = await cardsServiceModel.findCardById(cardId);
         const updatedData = await validateCardSchema(req.body);
         if (foundCard.user_id == req.tokenPayload.userId) {
             await cardsServiceModel.updateCard(cardId, updatedData)
             res.status(200).json({ messgae: "Card update successful" })
         }
-        else res.status(400).json({ message: "somethign went wrong. Please try again" })
+        else throw ("You are not the owner of the card you are trying to edit!")
     }
     catch (err) {
         res.status(400).json({ message: err.message || err });
@@ -93,10 +91,13 @@ router.put("/:id", loggedInCheck, async (req, res) => {
 
 router.patch("/:id", loggedInCheck, async (req, res) => {
     try {
-        const cardId = { id: req.params.id };
-        await validateId(cardId);
+        await validateId({ id: req.params.id });
+        const cardId = req.params.id;
         const userId = req.tokenPayload.userId;
         const foundCard = await cardsServiceModel.findCardById(cardId);
+        if (!foundCard) {
+            throw ("The card you are attempting to like is not found")
+        }
         if (req.tokenPayload && foundCard.likes.includes(userId)) {
             const unlikeUpdated = foundCard.likes.filter((user) => user !== userId)
             foundCard.likes = unlikeUpdated;
@@ -126,6 +127,9 @@ router.delete("/:id", loggedInCheck, async (req, res) => {
         await validateId(cardIdToCheck);
         const cardId = cardIdToCheck.id;
         foundCard = await cardsServiceModel.findCardById(cardId);
+        if (!foundCard) {
+            throw ("The card you are attempting to delete was not found")
+        }
         if (req.tokenPayload && req.tokenPayload.userId == foundCard.user_id || req.tokenPayload.isAdmin) {
             await cardsServiceModel.deleteCard(cardId);
             res.status(200).json({ message: "card deleted" })
