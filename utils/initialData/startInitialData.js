@@ -1,27 +1,14 @@
 const userServiceModel = require("../../model/mongoDB/users/userService");
 const cardsServiceModel = require("../../model/mongoDB/cards/cardService");
-const userList = require("./userList.json")
-const cardList = require("./cardsList.json")
+const userList = require("./userList.json");
+const cardList = require("./cardsList.json");
 const chalk = require("chalk");
-const generateBizNumber = require("../../utils/generateBizNumber")
 const hashServiceModel = require("../../utils/hash/hashService")
 
 
 const initUsers = async (userList) => {
     await userServiceModel.inializeData(userList);
 }
-
-const initCards = async (cardList) => {
-
-}
-
-/* const createBizNumbers = () => {
-    let bizNumbers = [];
-    for (let i = 0; i < 3; i++) {
-        bizNumbers = [...bizNumbers, generateBizNumber()]
-    }
-    return bizNumbers;
-} */
 
 const checkData = async () => {
     try {
@@ -39,8 +26,8 @@ const checkData = async () => {
             for (let i = 0; i < 3; i++) {
                 await cardsServiceModel.createCard({ ...cardList[i], user_id: allUsers[i]._id });
             };
+            console.log("cards created");
         }
-        console.log("cards created");
     }
     catch (err) {
         console.log(chalk.red.bold("initial err: ", err.message || err));
@@ -51,5 +38,4 @@ const checkData = async () => {
 module.exports = {
     checkData,
     initUsers,
-    initCards
 }

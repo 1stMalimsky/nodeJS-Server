@@ -14,9 +14,31 @@ const initializeCards = (arr) => {
     return Card.insertMany(arr);
 }
 
+const findCardById = (id) => {
+    return Card.findById(id)
+}
+
+const findMany = (userId) => {
+    return Card.find({ user_id: userId }, { title: 1 });
+}
+
+const updateCard = (cardId, updatedCard) => {
+    return Card.findByIdAndUpdate(cardId, updatedCard, {
+        new: true
+    });
+};
+
+const deleteCard = (id) => {
+    return Card.deleteOne({ _id: id });
+}
+
 module.exports = {
 
     getAllCards,
     createCard,
-    initializeCards
+    initializeCards,
+    findMany,
+    findCardById,
+    updateCard,
+    deleteCard
 }

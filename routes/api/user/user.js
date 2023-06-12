@@ -10,7 +10,7 @@ const userServiceModel = require("../../../model/mongoDB/users/userService");
 const CustomError = require("../../../utils/CustomError");
 const jwtServiceModel = require("../../../utils/jwt/jwtService");
 const { checkCredentials, loggedInCheck } = require("../../../middleware/userAuthMiddleware");
-const { validateUserId } = require("../../../validation/joi/userIdValidation")
+const { validateId } = require("../../../validation/joi/userIdValidation")
 const { validateBizChange, validateEditUser } = require("../../../validation/joi/editValidation")
 
 /* POST requests */
@@ -72,8 +72,8 @@ router.get("/users/", loggedInCheck, checkCredentials(true, false), async (req, 
 
 router.get("/:id", loggedInCheck, async (req, res) => {
     try {
-        const paramsId = req.params.id;
-        validateUserId(paramsId);
+        const paramsId = { id: req.params.id };
+        validateId(paramsId);
         const userFromDb = await userServiceModel.getUserById(paramsId);
         if (req.tokenPayload.userId !== userFromDb._id.toString() && !req.tokenPayload.isAdmin) {
             throw new CustomError("You are not authorized to view this User");
@@ -92,7 +92,7 @@ router.get("/:id", loggedInCheck, async (req, res) => {
 
 router.put("/:id", loggedInCheck, async (req, res) => {
     try {
-        await validateUserId(req.params.id);
+        await validateId({ id: req.params.id });
         await validateEditUser(req.body);
         if (req.params.id === req.tokenPayload.userId.toString()) {
             delete req.body.isBusiness;
@@ -111,7 +111,7 @@ router.put("/:id", loggedInCheck, async (req, res) => {
 router.patch("/:id", loggedInCheck, async (req, res) => {
     try {
 
-        await validateUserId(req.params.id);
+        await validateId({ id: req.params.id });
         await validateBizChange(req.body);
         if (req.params.id === req.tokenPayload.userId.toString() && req.params.id === req.body.email) {
             await userServiceModel.updateUser(req.params.id, { isBusiness: req.body.isBusiness })
@@ -129,7 +129,7 @@ router.patch("/:id", loggedInCheck, async (req, res) => {
 
 router.delete("/:id", loggedInCheck, async (req, res) => {
     try {
-        await validateUserId(req.params.id);
+        await validateId({ id: req.params.id });
         if (req.tokenPayload.isAdmin || req.tokenPayload.userId.toString() === req.params.id) {
             await userServiceModel.deleteUser(req.params.id)
             res.status(200).json({ message: "user deleted!" })

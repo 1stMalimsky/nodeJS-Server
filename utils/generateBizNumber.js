@@ -10,7 +10,6 @@ const generateBizNumber = async () => {
                 { bizNumber: 1, _id: 0 }
             );
             if (!card) {
-                console.log("bizNumber - ", randomNumber);
                 return randomNumber;
             }
         }
