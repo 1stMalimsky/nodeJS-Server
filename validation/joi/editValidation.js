@@ -45,21 +45,10 @@ const editUserSchema = Joi.object({
     isBusiness: Joi.boolean().required(),
 });
 
-const validateBizChangeSchema = Joi.object({
-    email: Joi.string()
-        .regex(
-            new RegExp(/^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$/)
-        )
-        .required(),
-    isBusiness: Joi.boolean().required()
-})
-
 const validateEditUser = (userInput) =>
     editUserSchema.validateAsync(userInput);
 
-const validateBizChange = (input) =>
-    validateBizChangeSchema.validateAsync(input);
 module.exports = {
     validateEditUser,
-    validateBizChange
+
 };

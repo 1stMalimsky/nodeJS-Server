@@ -10,8 +10,8 @@ const userServiceModel = require("../../../model/mongoDB/users/userService");
 const CustomError = require("../../../utils/CustomError");
 const jwtServiceModel = require("../../../utils/jwt/jwtService");
 const { checkCredentials, loggedInCheck } = require("../../../middleware/userAuthMiddleware");
-const { validateId } = require("../../../validation/joi/userIdValidation")
-const { validateBizChange, validateEditUser } = require("../../../validation/joi/editValidation")
+const validateId = require("../../../validation/joi/userIdValidation");
+const { validateEditUser } = require("../../../validation/joi/editValidation")
 
 /* POST requests */
 
@@ -21,11 +21,10 @@ router.post("/users", async (req, res) => {
         req.body.password = await hashService.generateHash(req.body.password);
         req.body = (req.body);
         await userServiceModel.registerUser(req.body);
-        res.status(200).json("user registered");
+        res.status(201).json("user registered");
     }
     catch (err) {
-        console.log(chalk.red.bold("regValidation", err));
-        res.status(500).send(`regValid error - ${err}`);
+        res.status(400).json({ message: err.message || err });
     }
 })
 
@@ -49,8 +48,7 @@ router.post("/users/login", async (req, res) => {
         res.json({ token: token })
     }
     catch (err) {
-        console.log(chalk.red.bold(err));
-        res.status(400).json("Invalid user name or password. please try again!");
+        res.status(400).json({ message: err.message || err });
     }
 })
 
@@ -58,31 +56,30 @@ router.post("/users/login", async (req, res) => {
 
 router.get("/users/", loggedInCheck, checkCredentials(true, false), async (req, res) => {
     try {
-        console.log("/users reached");
         const allUsers = await userServiceModel.getAllUsers();
         if (!allUsers) {
-            throw { message: "no users found" };
+            throw new CustomError("no users found");
         }
         res.status(200).json(allUsers)
     }
     catch (err) {
-        console.log(err);
+        res.status(400).json({ message: err.message || err });
     }
 });
 
 router.get("/:id", loggedInCheck, async (req, res) => {
     try {
         const paramsId = { id: req.params.id };
-        validateId(paramsId);
-        const userFromDb = await userServiceModel.getUserById(paramsId);
+        await validateId(paramsId);
+        const userIdString = paramsId.id;
+        const userFromDb = await userServiceModel.getUserById(userIdString);
         if (req.tokenPayload.userId !== userFromDb._id.toString() && !req.tokenPayload.isAdmin) {
-            throw new CustomError("You are not authorized to view this User");
+            throw ("You are not authorized to view this User");
         }
         else res.status(200).json(userFromDb);
     }
     catch (err) {
-        console.log("err from get id", err);
-        res.status(400).json(err)
+        res.status(401).json({ message: err.message || err });
     }
 })
 
@@ -94,16 +91,16 @@ router.put("/:id", loggedInCheck, async (req, res) => {
     try {
         await validateId({ id: req.params.id });
         await validateEditUser(req.body);
-        if (req.params.id === req.tokenPayload.userId.toString()) {
+        const userId = req.params.id
+        if (userId === req.tokenPayload.userId.toString()) {
             delete req.body.isBusiness;
             await userServiceModel.updateUser(req.params.id, req.body);
             return res.status(200).json({ message: "Update Successful" });
         }
-        throw { message: "You don't are not the user you are trying to edit!" }
+        throw { message: "You are not the user you are trying to edit!" }
     }
     catch (err) {
-        console.log("error from edit - ", err);
-        res.status(400).json({ message: err.message || err })
+        res.status(401).json({ message: err.message || err })
     }
 })
 
@@ -112,16 +109,18 @@ router.patch("/:id", loggedInCheck, async (req, res) => {
     try {
 
         await validateId({ id: req.params.id });
-        await validateBizChange(req.body);
-        if (req.params.id === req.tokenPayload.userId.toString() && req.params.id === req.body.email) {
-            await userServiceModel.updateUser(req.params.id, { isBusiness: req.body.isBusiness })
-            res.status(200).json({ message: "business status updated!" })
+        const userId = req.params.id;
+        const userProfile = await userServiceModel.getUserById(userId);
+        if (userId === req.tokenPayload.userId.toString()) {
+            userProfile.isBusiness = !userProfile.isBusiness;
+            await userServiceModel.updateUser(userId, userProfile);
+            res.status(200).json({ message: "business status updated!", newProfile: userProfile })
         }
-        else throw { message: "You don't are not the user you are trying to edit!" }
+        else throw { message: "You are not the user you are trying to edit!" }
     }
     catch (err) {
-        console.log("err from bizCahnge", err);
-        res.status(400).json({ message: err.message || err });
+        console.log("err from isBusiness Status Change", err.message || err);
+        res.status(401).json({ message: err.message || err });
     }
 })
 
@@ -135,10 +134,9 @@ router.delete("/:id", loggedInCheck, async (req, res) => {
             res.status(200).json({ message: "user deleted!" })
         }
         else throw ("You are not allowed to delete this user")
-
     }
     catch (err) {
-        res.status(400).json(err.message || err);
+        res.status(401).json({ message: err.message || err });
     }
 })
 

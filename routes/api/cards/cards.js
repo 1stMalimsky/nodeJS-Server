@@ -127,7 +127,7 @@ router.delete("/:id", loggedInCheck, async (req, res) => {
         const cardId = cardIdToCheck.id;
         foundCard = await cardsServiceModel.findCardById(cardId);
         if (req.tokenPayload && req.tokenPayload.userId == foundCard.user_id || req.tokenPayload.isAdmin) {
-            await deleteCard(cardId);
+            await cardsServiceModel.deleteCard(cardId);
             res.status(200).json({ message: "card deleted" })
         }
         else res.status(400).json({ message: "You are not authorized to delete this card" })
