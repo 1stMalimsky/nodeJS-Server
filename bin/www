@@ -5,10 +5,12 @@ var http = require('http');
 const chalk = require("chalk");
 const connectToDBService = require("../model/connectToDBService");
 const { checkData } = require('../utils/initialData/startInitialData.js');
+const config = require("config");
+
 
 connectToDBService()
   .then(() => {
-    console.log(chalk.cyan.bold("connected to mongo"));
+    console.log(chalk.cyan.bold(`connected to ${config.get("dbOption")}`));
   })
   .catch((err) => {
     console.log(chalk.redBright.bold(err));

@@ -3,6 +3,7 @@
     "mongoUrl": "mongodb://127.0.0.1:27017/projectserver",
     "mongoAtlasUrl": "mongodb+srv://admin:Aa123456!@cluster0.co1es7j.mongodb.net/"
   },
-  "jwt": "kljhasfq243256",
-  "file": "running on DEV"
+  "dbOption": "mongoAtlas",
+  "jwt": "lkjasdhfg123",
+  "file": "running on production"
 }

@@ -7,15 +7,18 @@ const { checkCredentials, loggedInCheck } = require("../../../middleware/userAut
 const validateId = require("../../../validation/joi/userIdValidation")
 const { validateCardSchema } = require("../../../validation/joi/cardsValidation");
 const generateBizNumber = require("../../../utils/generateBizNumber");
-
+const normalzieCard = require("../../../utils/normalize/normalizeCard");
+const normalizeCard = require("../../../utils/normalize/normalizeCard");
 
 /* POST requests */
 
 router.post("/", loggedInCheck, checkCredentials(false, true), async (req, res) => {
     try {
-        await validateCardSchema(req.body);
+        const newCard = normalizeCard(req.body);
+        console.log("normalized new Card", newCard);
+        await validateCardSchema(newCard);
         const bizNumber = await generateBizNumber()
-        const cardData = { ...req.body, bizNumber: bizNumber, user_id: req.tokenPayload.userId };
+        const cardData = { ...newCard, bizNumber: bizNumber, user_id: req.tokenPayload.userId };
         await cardsServiceModel.createCard(cardData);
         res.status(200).json({
             message: "card created",
@@ -23,7 +26,7 @@ router.post("/", loggedInCheck, checkCredentials(false, true), async (req, res) 
         })
     }
     catch (err) {
-        console.log("card registration err", err.message || err);
+        console.log(err.message || err);
         res.status(400).json({ message: err.message || err })
     }
 
@@ -31,18 +34,19 @@ router.post("/", loggedInCheck, checkCredentials(false, true), async (req, res) 
 
 /* GET requests */
 
-router.get("/", async (req, res, next) => {
-    const allCards = await cardsServiceModel.getAllCards();
-    res.status(200).json({ allCards: allCards })
+router.get("/", async (req, res) => {
+    try {
+        const allCards = await cardsServiceModel.getAllCards();
+        res.status(200).json({ allCards: allCards })
+    }
+    catch (err) {
+        res.status(400).json({ message: err.message || err });
+    }
 });
 
-router.get("/my-cards", async (req, res) => {
+router.get("/my-cards", loggedInCheck, async (req, res) => {
     try {
-        const token = await jwtServiceModel.verifyToken(req.headers["x-auth-token"]);
-        if (!token) {
-            throw ("Please provide a valid token")
-        }
-        const foundCards = await cardsServiceModel.findMany(token.userId);
+        const foundCards = await cardsServiceModel.findMany(req.tokenPayload.userId);
         if (foundCards.length == 0) {
             res.status(404).json({ message: "no cards found" })
         }
@@ -60,6 +64,9 @@ router.get("/:id", async (req, res) => {
         await validateId({ id: req.params.id });
         const reqId = req.params.id;
         const foundCard = await cardsServiceModel.findCardById(reqId)
+        if (!foundCard) {
+            throw ("no card found")
+        }
         res.status(200).json({ foundCard: foundCard });
     }
     catch (err) {
@@ -75,6 +82,9 @@ router.put("/:id", loggedInCheck, async (req, res) => {
         validateId({ id: req.params.id });
         const cardId = req.params.id;
         const foundCard = await cardsServiceModel.findCardById(cardId);
+        if (!foundCard) {
+            throw ("card not found")
+        }
         const updatedData = await validateCardSchema(req.body);
         if (foundCard.user_id == req.tokenPayload.userId) {
             await cardsServiceModel.updateCard(cardId, updatedData)
@@ -102,15 +112,12 @@ router.patch("/:id", loggedInCheck, async (req, res) => {
             const unlikeUpdated = foundCard.likes.filter((user) => user !== userId)
             foundCard.likes = unlikeUpdated;
             await cardsServiceModel.updateCard(cardId, foundCard);
-            console.log("updated unlikes array", foundCard.likes);
             res.status(200).json({ message: "unlike submitted" })
         }
         else {
             const likeUpdated = foundCard.likes.concat(userId);
             foundCard.likes = likeUpdated;
-            console.log("foundCard---> ", foundCard);
             await cardsServiceModel.updateCard(cardId, foundCard);
-            console.log("updated Like array", foundCard.likes);
             res.status(200).json({ message: "like submitted" })
         }
     }
@@ -123,9 +130,8 @@ router.patch("/:id", loggedInCheck, async (req, res) => {
 
 router.delete("/:id", loggedInCheck, async (req, res) => {
     try {
-        const cardIdToCheck = { id: req.params.id };
-        await validateId(cardIdToCheck);
-        const cardId = cardIdToCheck.id;
+        await validateId({ id: req.params.id });
+        const cardId = req.params.id
         foundCard = await cardsServiceModel.findCardById(cardId);
         if (!foundCard) {
             throw ("The card you are attempting to delete was not found")

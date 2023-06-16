@@ -33,10 +33,6 @@ const deleteUser = (id) => {
     return User.deleteOne({ _id: id });
 }
 
-const inializeData = (arr) => {
-    return User.insertMany(arr);
-}
-
 module.exports = {
     registerUser,
     loginUser,
@@ -44,6 +40,5 @@ module.exports = {
     getAllUsers,
     getUserById,
     updateUser,
-    deleteUser,
-    inializeData,
+    deleteUser
 }

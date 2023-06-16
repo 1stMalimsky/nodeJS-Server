@@ -4,8 +4,8 @@
   "private": true,
   "main": "./bin/www",
   "scripts": {
-    "start": "node .",
-    "dev": "nodemon"
+    "start": "cross-env NODE_ENV= node .",
+    "dev": "cross-env NODE_ENV=development nodemon ."
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",

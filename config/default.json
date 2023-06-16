@@ -1,6 +1,7 @@
 {
   "validatorOption": "Joi",
   "hashOption": "bcryptjs",
-  "dbOption": "mongo",
-  "tokenOption": "jwt"
+  "dbOption": "mongoAtlas",
+  "tokenOption": "jwt",
+  "jwt": "lkjasdhfg123"
 }

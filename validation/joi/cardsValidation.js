@@ -25,7 +25,7 @@ const createCardSchema = Joi.object({
         /(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}|www\.[a-zA-Z0-9]+\.[^\s]{2,})/
       )
     ),
-    alt: Joi.string().min(2).max(256).required(),
+    alt: Joi.string().min(2).max(256),
   }),
   address: Joi.object().keys({
     state: Joi.string().min(2).max(256).allow(""),

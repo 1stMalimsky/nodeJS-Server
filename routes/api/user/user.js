@@ -12,15 +12,16 @@ const jwtServiceModel = require("../../../utils/jwt/jwtService");
 const { checkCredentials, loggedInCheck } = require("../../../middleware/userAuthMiddleware");
 const validateId = require("../../../validation/joi/userIdValidation");
 const { validateEditUser } = require("../../../validation/joi/editValidation")
+const normalizeUser = require("../../../utils/normalize/normalizeUser")
 
 /* POST requests */
 
 router.post("/users", async (req, res) => {
     try {
-        await registerUserValidation(req.body);
-        req.body.password = await hashService.generateHash(req.body.password);
-        req.body = (req.body);
-        await userServiceModel.registerUser(req.body);
+        const newUser = normalizeUser(req.body);
+        await registerUserValidation(newUser);
+        newUser.password = await hashService.generateHash(newUser.password);
+        await userServiceModel.registerUser(newUser);
         res.status(201).json("user registered");
     }
     catch (err) {

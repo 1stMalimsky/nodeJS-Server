@@ -1,9 +1,13 @@
 const config = require("config");
 const mongoose = require("mongoose");
-const chalk = require("chalk")
-
-const connectToDB = () => {
-    return mongoose.connect(config.get("dbConfig.url"));
+const connectToDBMongo = () => {
+    console.log("mongo config", config.get("dbConfig"));
+    return mongoose.connect(config.get("dbConfig.mongoUrl"));
 };
 
-module.exports = connectToDB;
+const connectToDBAtlas = () => {
+    console.log("atlas config", config.get("dbConfig"));
+    return mongoose.connect(config.get("dbConfig.mongoAtlasUrl"));
+};
+
+module.exports = { connectToDBMongo, connectToDBAtlas };
