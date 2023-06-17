@@ -3,10 +3,10 @@ const connectToDb = require("./mongoDB/connectToDB");
 const dbOption = config.get("dbOption");
 
 const connectToDB = () => {
-  if (dbOption === "mongo") {
+  if (dbOption === "local") {
     return connectToDb.connectToDBMongo();
   }
-  if (dbOption === "mongoAtlas") {
+  if (dbOption === "global") {
     return connectToDb.connectToDBAtlas()
   };
 };

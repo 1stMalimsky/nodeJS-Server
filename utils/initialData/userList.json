@@ -8,10 +8,6 @@
     "phone": "05356352821",
     "email": "a@gmail.com",
     "password": "Aa123456!",
-    "image": {
-      "url": "https://cdn.pixabay.com/photo/2020/04/07/17/01/chicks-5014152_960_720.jpg",
-      "alt": "yellow fluffy chickens"
-    },
     "address": {
       "state": "",
       "country": "IL",

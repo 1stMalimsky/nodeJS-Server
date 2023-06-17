@@ -1,15 +1,11 @@
 [
   {
-    "title": "Card Changed",
-    "subTitle": "sub card 1",
-    "description": "save the card pls",
+    "title": "Card #1",
+    "subTitle": "sub card #1",
+    "description": "This is an example of the first card being created",
     "phone": "0500000000",
     "email": "biz1@gmail.com",
     "web": "www.google.com",
-    "image": {
-      "url": "https://cdn.pixabay.com/photo/2020/04/07/17/01/chicks-5014152_960_720.jpg",
-      "alt": "yellow fluffy chickens"
-    },
     "address": {
       "state": "",
       "country": "Israel",
@@ -24,20 +20,16 @@
   },
 
   {
-    "title": "card2",
-    "subTitle": "sub card 2",
-    "description": "save the card pls",
+    "title": "card #2",
+    "subTitle": "sub card @2",
+    "description": "This is an example of the second card being created",
     "phone": "0500000000",
     "email": "biz2@gmail.com",
-    "image": {
-      "url": "https://cdn.pixabay.com/photo/2020/04/07/17/01/chicks-5014152_960_720.jpg",
-      "alt": "yellow fluffy chickens"
-    },
     "address": {
       "state": "",
       "country": "Israel",
-      "city": "Ashkeluna",
-      "street": "jump street",
+      "city": "Jerusalem",
+      "street": "sit street",
       "houseNumber": 23,
       "zip": 0
     },
@@ -47,20 +39,16 @@
   },
 
   {
-    "title": "card3",
-    "subTitle": "sub card 3",
-    "description": "save the card pls",
+    "title": "card #3",
+    "subTitle": "sub card #3",
+    "description": "This is an example of the third card being created",
     "phone": "0500000000",
     "email": "biz3@gmail.com",
-    "image": {
-      "url": "https://cdn.pixabay.com/photo/2020/04/07/17/01/chicks-5014152_960_720.jpg",
-      "alt": "yellow fluffy chickens"
-    },
     "address": {
       "state": "",
       "country": "Israel",
-      "city": "Ashkeluna",
-      "street": "jump street",
+      "city": "Kfar Saba",
+      "street": "stand street",
       "houseNumber": 23,
       "zip": 0
     },

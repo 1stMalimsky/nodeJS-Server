@@ -1,13 +1,10 @@
 const express = require("express");
 const router = express.Router();
-const jwtServiceModel = require("../../../utils/jwt/jwtService");
-const chalk = require("chalk");
 const cardsServiceModel = require("../../../model/mongoDB/cards/cardService")
 const { checkCredentials, loggedInCheck } = require("../../../middleware/userAuthMiddleware");
 const validateId = require("../../../validation/joi/userIdValidation")
 const { validateCardSchema } = require("../../../validation/joi/cardsValidation");
 const generateBizNumber = require("../../../utils/generateBizNumber");
-const normalzieCard = require("../../../utils/normalize/normalizeCard");
 const normalizeCard = require("../../../utils/normalize/normalizeCard");
 
 /* POST requests */
@@ -15,7 +12,6 @@ const normalizeCard = require("../../../utils/normalize/normalizeCard");
 router.post("/", loggedInCheck, checkCredentials(false, true), async (req, res) => {
     try {
         const newCard = normalizeCard(req.body);
-        console.log("normalized new Card", newCard);
         await validateCardSchema(newCard);
         const bizNumber = await generateBizNumber()
         const cardData = { ...newCard, bizNumber: bizNumber, user_id: req.tokenPayload.userId };
@@ -26,7 +22,6 @@ router.post("/", loggedInCheck, checkCredentials(false, true), async (req, res) 
         })
     }
     catch (err) {
-        console.log(err.message || err);
         res.status(400).json({ message: err.message || err })
     }
 
@@ -51,7 +46,7 @@ router.get("/my-cards", loggedInCheck, async (req, res) => {
             res.status(404).json({ message: "no cards found" })
         }
         else {
-            res.status(200).json({ foundCards: foundCards })
+            res.status(200).json({ yourCards: foundCards })
         }
     }
     catch (err) {
@@ -143,7 +138,6 @@ router.delete("/:id", loggedInCheck, async (req, res) => {
         else res.status(400).json({ message: "You are not authorized to delete this card" })
     }
     catch (err) {
-        console.log("Delete err", err.message || err);
         res.status(400).json({ message: err.message || err });
     }
 })
