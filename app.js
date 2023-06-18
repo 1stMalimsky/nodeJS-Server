@@ -10,7 +10,7 @@ const chalk = require("chalk");
 var app = express();
 
 app.use(cors());
-app.use(logger(':remote-addr - :remote-user [:date[clf]] ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":user-agent" "response time: ":response-time ms'));
+app.use(logger('request time: [:date[clf]] | method::method:url | request Status::status | Sent by::user-agent | response time: :response-time ms'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
