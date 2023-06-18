@@ -1,7 +1,7 @@
 {
   "validatorOption": "Joi",
   "hashOption": "bcryptjs",
-  "dbOption": "local",
+  "dbOption": "global",
   "tokenOption": "jwt",
   "jwt": "lkjasdhfg123"
 }
