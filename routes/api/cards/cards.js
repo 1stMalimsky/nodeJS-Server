@@ -83,7 +83,10 @@ router.put("/:id", loggedInCheck, async (req, res) => {
         const updatedData = await validateCardSchema(req.body);
         if (foundCard.user_id == req.tokenPayload.userId) {
             await cardsServiceModel.updateCard(cardId, updatedData)
-            res.status(200).json({ messgae: "Card update successful" })
+            res.status(200).json({
+                message: "Card update successful",
+                Edited_Card: updatedData
+            })
         }
         else throw ("You are not the owner of the card you are trying to edit!")
     }

@@ -20,6 +20,12 @@ npm run dev
 
 The server will start running on the default port (localport 8181).
 
+## DBConfig
+
+In the default "config" file, under "dbOption", you can choose which DB yo'd like tot work with -
+"dbOption":"local" - connects to a local mongoDB
+"dbOption":"global" - connects to MongoDB Atlas (cloud DB)
+
 ## API Endpoints
 
 ### Users
